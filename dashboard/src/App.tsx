@@ -11,20 +11,20 @@ function App() {
   return (
     <Grid container spacing={5}>
 
-       	  {/* Indicadores */}
-           <Grid>Elemento: Indicador 1</Grid>
-           <Grid>Elemento: Indicador 2</Grid>
-           <Grid>Elemento: Indicador 3</Grid>
-           <Grid>Elemento: Indicador 4</Grid>
-		      
-           {/* Tabla */}
-           <Grid>Elemento: Tabla</Grid>
-		      
-           {/* Gráfico */}
-           <Grid>Elemento: Gráfico 1</Grid>
-		  
-       </Grid>
-  )
+        {/* Indicadores */}
+        <Grid size={{ xs: 12, xl: 3 }}>Elemento: Indicador 1</Grid>
+        <Grid size={{ xs: 12, xl: 3 }}>Elemento: Indicador 2</Grid>
+        <Grid size={{ xs: 12, xl: 3 }}>Elemento: Indicador 3</Grid>
+        <Grid size={{ xs: 12, xl: 3 }}>Elemento: Indicador 4</Grid>
+
+        {/* Tabla */}
+        <Grid size={{ xs: 12, xl: 8 }}>Elemento: Tabla</Grid>
+
+        {/* Gráfico */}
+        <Grid size={{ xs: 12, xl: 4 }}>Elemento: Gráfico 1</Grid>
+       
+    </Grid>
+)
 }
 
 export default App
