@@ -15,7 +15,7 @@ export default function ControlWeather() {
    {/* Constante de referencia a un elemento HTML */ }
     const descriptionRef = useRef<HTMLDivElement>(null);
     {/* Variable de estado y función de actualización */}
-    let [selected, setSelected] = useState(-1)
+    let [, setSelected] = useState(-1)
     {/* Arreglo de objetos */}
     let items = [
         {"name":"Precipitación", "description":"Cantidad de agua que cae sobre una superficie en un período específico."}, 
