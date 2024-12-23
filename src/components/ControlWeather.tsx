@@ -1,89 +1,91 @@
-{/* Componentes MUI */}
+import { useState, useRef } from "react";
+import IndicatorsButtonGroupExample from "./IndicatorsButtonGroup";
 
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
- {/* Interfaz SelectChangeEvent */}
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-  {/* Hooks */ }
-import { useState, useRef } from 'react';
-   
-export default function ControlWeather() {
-   {/* Constante de referencia a un elemento HTML */ }
-    const descriptionRef = useRef<HTMLDivElement>(null);
-    {/* Variable de estado y función de actualización */}
-    let [, setSelected] = useState(-1)
-    {/* Arreglo de objetos */}
-    let items = [
-        {"name":"Precipitación", "description":"Cantidad de agua que cae sobre una superficie en un período específico."}, 
-        {"name": "Humedad", "description":"Cantidad de vapor de agua presente en el aire, generalmente expresada como un porcentaje."}, 
-        {"name":"Nubosidad", "description":"Grado de cobertura del cielo por nubes, afectando la visibilidad y la cantidad de luz solar recibida."}
-    ]
+interface ControlWeatherProps {
+  setSelectedVariable: (variable: string) => void;
+}
 
-    {/* Arreglo de elementos JSX */}
-    let options = items.map( (item, key) => <MenuItem key={key} value={key}>{item["name"]}</MenuItem> )
-     {/* Manejador de eventos */}
-     const handleChange = (event: SelectChangeEvent) => {
-           
-       let idx = parseInt(event.target.value)
-       // alert( idx );
-       setSelected( idx );
+export default function ControlWeather({
+  setSelectedVariable,
+}: ControlWeatherProps) {
+  {
+    /* Constante de referencia a un elemento HTML */
+  }
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  {
+    /* Variable de estado y función de actualización */
+  }
+  let [, setSelected] = useState(-1);
+  {
+    /* Arreglo de objetos */
+  }
+  let items = [
+    {
+      name: "precipitation",
+      description:
+        "Cantidad de agua que cae sobre una superficie en un período específico.",
+    },
+    {
+      name: "humidity",
+      description:
+        "Cantidad de vapor de agua presente en el aire, generalmente expresada como un porcentaje.",
+    },
+    {
+      name: "temperature",
+      description:
+        "Grado de cobertura del cielo por nubes, afectando la visibilidad y la cantidad de luz solar recibida.",
+    },
+  ];
 
-        {/* Modificación de la referencia descriptionRef */}
-        if (descriptionRef.current !== null) {
-           descriptionRef.current.innerHTML = (idx >= 0) ? items[idx]["description"] : ""
-       }
+  {
+    /* 
+    let options = items.map((item, key) => (
+    <MenuItem key={key} value={key}>
+      {item["name"]}
+    </MenuItem>
+  ));
+    */
+  }
 
+  const handleChange = (selectedOption: string) => {
+    const selectedItem = items.find((item) => item.name === selectedOption);
+    if (selectedItem) {
+      setSelectedVariable(selectedItem.name); // Pass the selected variable to parent
+      setSelected(items.indexOf(selectedItem)); // Update the selected state
+      if (descriptionRef.current) {
+        descriptionRef.current.innerHTML = selectedItem.description; // Show description
+      }
+    }
+  };
 
-   };
-       
-    {/* JSX */}
-    return (
-        <Paper
-            sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column'
-            }}
-        >
+  {
+    /* 
+  const handleChange = (event: SelectChangeEvent) => {
+    let idx = parseInt(event.target.value);
+    // alert( idx );
+    setSelected(idx);
+    const selectedItem = items[idx];
+    setSelectedVariable(selectedItem.name);
 
-            <Typography mb={2} component="h3" variant="h6" color="primary">
-                Variables Meteorológicas
-            </Typography>
+    if (descriptionRef.current) {
+      descriptionRef.current.innerHTML = selectedItem.name;
+    }
 
-            <Box sx={{ minWidth: 120 }}>
-                   
-                <FormControl fullWidth>
-                    <InputLabel id="simple-select-label">Variables</InputLabel>
-                    <Select
-                        labelId="simple-select-label"
-                        id="simple-select"
-                        label="Variables"
-                        defaultValue='-1'
-                        onChange={handleChange}
-                    >
-                        <MenuItem key="-1" value="-1" disabled>Seleccione una variable</MenuItem>
+    {
+      /* Modificación de la referencia descriptionRef 
 
-                        {options}
-
-                    </Select>
-                </FormControl>
-
-            </Box>
-            {/* Use la variable de estado para renderizar del item seleccionado
-            <Typography mt={2} component="p" color="text.secondary">
-            {
-                (selected >= 0)?items[selected]["description"]:""
-            }
-            </Typography> */}
-             <Typography ref={descriptionRef} mt={2} component="p" color="text.secondary" />
-
-
-        </Paper>
-
-
-    )
+    if (descriptionRef.current !== null) {
+      descriptionRef.current.innerHTML =
+        idx >= 0 ? items[idx]["description"] : "";
+    }
+        
+    }
+  };*/
+  }
+  return (
+    <IndicatorsButtonGroupExample
+      options={items.map((item) => item.name)}
+      onChange={handleChange}
+    />
+  );
 }

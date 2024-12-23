@@ -1,7 +1,7 @@
 export default interface Item {
-    dateStart: String;
-    dateEnd: String;
-    precipitation: String;
-    humidity: String;
-    clouds: String;
+  dateStart: String;
+  dateEnd: String;
+  precipitation: number;
+  humidity: number;
+  clouds: number;
 }

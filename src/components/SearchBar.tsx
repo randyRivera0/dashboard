@@ -1,75 +1,100 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import * as React from "react";
+import { useState } from "react";
+import { styled, alpha } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
 
-const SearchBar = () => {
-  const [query, setQuery] = useState<string>(""); // User input
-  const [results, setResults] = useState<string | null>(""); // Displayed results or errors
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
-  const [city, setCity] = useState<string>(""); // Access the context to update the city
+// Styled components for the search bar
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
 
-  const API_URL = "https://api.openweathermap.org/data/2.5/forecast"; // OpenWeather API URL
-  const API_KEY = "5c39343e5c27e119e010125e99fa753a"; // Replace with your OpenWeather API key
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
-  useEffect(() => {
-    // Only make a request if the query has a value (i.e., user has entered something)
-    if (query.length === 0) {
-      setResults(""); // Reset results if query is empty
-      return;
-    }
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  width: "100%",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
 
-    // Fetch results from the API
-    const fetchResults = async () => {
-      setLoading(true); // Start loading
+// SearchBar component to handle city input
+interface SearchBarProps {
+  setCity: React.Dispatch<React.SetStateAction<string>>; // This function will update the city state
+}
 
-      try {
-        // Make the API request with city name as the query parameter
-        const response = await axios.get(API_URL, {
-          params: {
-            q: query, // City query
-            mode: "json", // JSON response format
-            appid: API_KEY, // API key
-          },
-        });
+const SearchBar: React.FC<SearchBarProps> = ({ setCity }) => {
+  const [cityInput, setCityInput] = useState<string>("");
 
-        // Check if the response has valid data (city found)
-        if (response.data && response.data.city) {
-          setResults(
-            `Weather in ${response.data.city.name}: ${response.data.list[0].weather[0].description}, Temperature: ${response.data.list[0].main.temp}°C`
-          ); // Display weather description and temperature
-          setCity(response.data.city.name); // Update the global city
-        } else {
-          setResults("No results found.");
-        }
-      } catch (error) {
-        setResults("Error fetching data, please try again later.");
-      } finally {
-        setLoading(false); // End loading
-      }
-    };
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCityInput(event.target.value); // Update local input state
+  };
 
-    // Debounce the API call to avoid too many requests while typing
-    const debounceTimer = setTimeout(() => {
-      fetchResults(); // Call the API after 500ms delay
-    }, 500);
-
-    // Cleanup debounce timer on component unmount or query change
-    return () => clearTimeout(debounceTimer);
-  }, [query, setCity]); // Re-run when the `query` changes
+  const handleButtonClick = () => {
+    setCity(cityInput); // Update the city state in the parent component
+    console.log("City changed to:", cityInput); // Log the city to console
+  };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)} // Update query when user types
-        placeholder="Enter city..."
-        className="search-input"
-      />
-      {loading && <p>Loading...</p>} {/* Show loading status */}
-      <div>
-        <p>{results}</p> {/* Show results or error message */}
-      </div>
-    </div>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          >
+            Gecko's Weather
+          </Typography>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              value={cityInput} // Bind the input value to the state
+              onChange={handleInputChange} // Handle input change
+              placeholder="Enter city"
+              inputProps={{ "aria-label": "search" }}
+            />
+            <button onClick={handleButtonClick}>Submit</button>{" "}
+            {/* Button to submit the city */}
+          </Search>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 

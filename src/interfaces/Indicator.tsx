@@ -1,5 +1,5 @@
 export default interface Indicator {
-    title?: String;
-    subtitle?: String;
-    value?: String;
+  title?: string;
+  subtitle?: string;
+  value?: string;
 }
